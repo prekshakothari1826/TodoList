@@ -1,0 +1,112 @@
+/* General styling */
+body {
+  font-family: Poppins, sans-serif;
+  background: #f4f6f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  padding: 10px;
+}
+
+/* Container */
+.container {
+  background: white;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+/* Title */
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+/* Input and button */
+#task-input {
+  padding: 10px;
+  width: 65%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+#add-btn {
+  padding: 10px 15px;
+  margin-left: 5px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: 0.2s ease;
+}
+
+#add-btn:hover {
+  background: #0056b3;
+}
+
+/* Task list */
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  text-align: left;
+}
+
+li {
+  background: #f9f9f9;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+}
+
+li.done {
+  text-decoration: line-through;
+  color: gray;
+}
+
+/* Delete button */
+li button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+/* 🌐 Responsive Design */
+@media (max-width: 600px) {
+  .container {
+    max-width: 95%;
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  #task-input {
+    width: 60%;
+    font-size: 0.9rem;
+  }
+
+  #add-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  li {
+    font-size: 0.9rem;
+  }
+}
