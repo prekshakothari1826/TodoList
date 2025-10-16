@@ -1,84 +1,88 @@
-const input = document.getElementById("task-input");
-const addBtn = document.getElementById("add-btn");
-const taskList = document.getElementById("task-list");
-const toggleMode = document.getElementById("toggle-mode");
+const express = require('express');
+const cors = require('cors');
+const fs = require('fs').promises; // Use the promises version for async/await
+const path = require('path');
+const app = express();
+const PORT = 3000;
 
-// Load saved theme + tasks
-window.addEventListener("load", () => {
-  loadTasks();
-  const darkMode = localStorage.getItem("darkMode");
-  if (darkMode === "enabled") enableDarkMode();
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Path to your data file
+const DATA_FILE = path.join(__dirname, 'tasks.json');
+
+// Helper function to read tasks from the file
+async function readTasks() {
+    try {
+        const data = await fs.readFile(DATA_FILE, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        // If the file doesn't exist or is empty, return an empty array
+        return [];
+    }
+}
+
+// Helper function to write tasks to the file
+async function writeTasks(tasks) {
+    await fs.writeFile(DATA_FILE, JSON.stringify(tasks, null, 2), 'utf8');
+}
+
+// GET /api/tasks - Read all tasks
+app.get('/api/tasks', async (req, res) => {
+    const tasks = await readTasks();
+    res.json(tasks);
 });
 
-addBtn.addEventListener("click", addTask);
-toggleMode.addEventListener("click", toggleDarkMode);
+// POST /api/tasks - Create a new task
+app.post('/api/tasks', async (req, res) => {
+    const { text } = req.body;
+    if (!text) {
+        return res.status(400).json({ error: 'Task text is required' });
+    }
+    const tasks = await readTasks();
+    const newTask = {
+        id: tasks.length ? Math.max(...tasks.map(t => t.id)) + 1 : 1, // Assign a unique ID
+        text,
+        done: false,
+    };
+    tasks.push(newTask);
+    await writeTasks(tasks);
+    res.status(201).json(newTask);
+});
 
-function addTask() {
-  const taskText = input.value.trim();
-  if (taskText === "") return;
+// PUT /api/tasks/:id - Update task status
+app.put('/api/tasks/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+    const { done } = req.body;
+    const tasks = await readTasks();
+    const taskIndex = tasks.findIndex(t => t.id === id);
 
-  const li = createTask(taskText);
-  taskList.appendChild(li);
-  saveTasks();
-  input.value = "";
-}
+    if (taskIndex === -1) {
+        return res.status(404).json({ error: 'Task not found' });
+    }
 
-function createTask(text) {
-  const li = document.createElement("li");
-  li.textContent = text;
+    tasks[taskIndex].done = done;
+    await writeTasks(tasks);
+    res.json(tasks[taskIndex]);
+});
 
-  li.addEventListener("click", () => {
-    li.classList.toggle("done");
-    saveTasks();
-  });
+// DELETE /api/tasks/:id - Delete a task
+app.delete('/api/tasks/:id', async (req, res) => {
+    const id = parseInt(req.params.id);
+    let tasks = await readTasks();
+    const initialLength = tasks.length;
+    
+    tasks = tasks.filter(t => t.id !== id);
 
-  const delBtn = document.createElement("button");
-  delBtn.textContent = "✖";
-  delBtn.addEventListener("click", () => {
-    li.remove();
-    saveTasks();
-  });
+    if (tasks.length === initialLength) {
+        return res.status(404).json({ error: 'Task not found' });
+    }
+    
+    await writeTasks(tasks);
+    res.status(204).send();
+});
 
-  li.appendChild(delBtn);
-  return li;
-}
-
-function saveTasks() {
-  const tasks = [];
-  document.querySelectorAll("#task-list li").forEach(li => {
-    tasks.push({
-      text: li.childNodes[0].textContent,
-      done: li.classList.contains("done")
-    });
-  });
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-}
-
-function loadTasks() {
-  const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-  storedTasks.forEach(task => {
-    const li = createTask(task.text);
-    if (task.done) li.classList.add("done");
-    taskList.appendChild(li);
-  });
-}
-
-function toggleDarkMode() {
-  if (document.body.classList.contains("dark")) {
-    disableDarkMode();
-  } else {
-    enableDarkMode();
-  }
-}
-
-function enableDarkMode() {
-  document.body.classList.add("dark");
-  toggleMode.textContent = "🌙";
-  localStorage.setItem("darkMode", "enabled");
-}
-
-function disableDarkMode() {
-  document.body.classList.remove("dark");
-  toggleMode.textContent = "☀️";
-  localStorage.setItem("darkMode", "disabled");
-}
+app.listen(PORT, () => {
+    console.log(`Backend server running on http://localhost:${PORT}`);
+});
