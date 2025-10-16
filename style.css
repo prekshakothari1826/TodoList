@@ -1,112 +1,154 @@
-/* General styling */
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+  transition: 0.3s ease;
+}
+
 body {
-  font-family: Poppins, sans-serif;
-  background: #f4f6f8;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #fbeaff, #b8e1ff);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0;
-  padding: 10px;
 }
 
-/* Container */
-.container {
-  background: white;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-  text-align: center;
-  transition: all 0.3s ease;
+..container {
+  background: #ffffffb7;
+  backdrop-filter: blur(12px);
+  border-radius: 25px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  width: 95%;
+  max-width: 500px; /* ✅ increased from 420px to 500px */
+  padding: 2rem;
 }
 
-/* Title */
-h1 {
-  font-size: 1.8rem;
-  margin-bottom: 15px;
-}
 
-/* Input and button */
-#task-input {
-  padding: 10px;
-  width: 65%;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-}
-
-#add-btn {
-  padding: 10px 15px;
-  margin-left: 5px;
-  border: none;
-  background: #007bff;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: 0.2s ease;
-}
-
-#add-btn:hover {
-  background: #0056b3;
-}
-
-/* Task list */
-ul {
-  list-style: none;
-  padding: 0;
-  margin-top: 20px;
-  text-align: left;
-}
-
-li {
-  background: #f9f9f9;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 8px;
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 1rem;
+  margin-bottom: 1rem;
 }
 
-li.done {
-  text-decoration: line-through;
-  color: gray;
+header h1 {
+  font-weight: 500;
+  font-size: 1.6rem;
 }
 
-/* Delete button */
-li button {
-  background: none;
+#toggle-mode {
   border: none;
+  background: transparent;
+  font-size: 1.5rem;
   cursor: pointer;
-  font-size: 1.1rem;
 }
 
-/* 🌐 Responsive Design */
-@media (max-width: 600px) {
-  .container {
-    max-width: 95%;
-    padding: 20px;
-  }
+.input-box {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
 
-  h1 {
-    font-size: 1.5rem;
-  }
+#task-input {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  border-radius: 15px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  outline: none;
+}
 
-  #task-input {
-    width: 60%;
-    font-size: 0.9rem;
-  }
+#add-btn {
+  padding: 0.7rem 1.2rem;
+  background: #a18aff;
+  border: none;
+  border-radius: 15px;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+}
 
-  #add-btn {
-    padding: 8px 12px;
-    font-size: 0.9rem;
-  }
+#add-btn:hover {
+  background: #8c74e0;
+}
 
-  li {
-    font-size: 0.9rem;
-  }
+ul {
+  list-style: none;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+li {
+  background: #f9f7ff;
+  margin-bottom: 0.6rem;
+  padding: 0.7rem 1rem;
+  border-radius: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+/* ✅ Mark done without strike — subtle animation */
+li.done {
+  background: #dfffe2;
+  color: #4b5563;
+  transform: scale(0.98);
+  opacity: 0.9;
+  position: relative;
+}
+
+li.done::before {
+  content: "✅";
+  position: absolute;
+  left: 12px;
+  font-size: 1rem;
+  color: #34d399;
+}
+
+li.done button {
+  color: #f87171;
+}
+
+
+li button {
+  border: none;
+  background: transparent;
+  color: #ff6961;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+/* 🌙 Dark Mode */
+body.dark {
+  background: linear-gradient(135deg, #141e30, #243b55);
+  color: white;
+}
+
+body.dark .container {
+  background: #1f2937d2;
+  color: #fff;
+}
+
+body.dark #task-input {
+  background: #374151;
+  color: #fff;
+  border: 1px solid #555;
+}
+
+body.dark li {
+  background: #2b3340;
+}
+
+body.dark #add-btn {
+  background: #6366f1;
+}
+
+body.dark #add-btn:hover {
+  background: #4f46e5;
 }
